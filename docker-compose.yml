@@ -1,0 +1,41 @@
+version: "2"
+
+services:
+  nginx:
+    build: .
+    restart: always
+    environment:
+      NGINX_BACKEND_HOST: laravel
+    depends_on:
+      - laravel
+    volumes:
+      - root:/var/www/public
+    ports:
+      - 80:80
+  laravel:
+    image: php:7.4-fpm
+    restart: always
+    volumes:
+      - root:/var/www/
+    depends_on:
+      - mysql
+  mysql:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: laravel
+      MYSQL_ROOT_PASSWORD: laravel
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.0.2
+    restart: always
+    ports:
+      - 8080:80
+    depends_on:
+      - mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: laravel 
+      PMA_HOST: mysql
+volumes:
+  root:
